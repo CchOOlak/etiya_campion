@@ -3,6 +3,7 @@ import string
 from src.model import Team
 
 def generate_fake_teams(team_number):
+    result = []
     s = string.ascii_lowercase
     for i in range(team_number):
         length = ((random.randrange(1, 20) + i) % 13) + 2
@@ -15,4 +16,5 @@ def generate_fake_teams(team_number):
             name=team_name,
             strength=team_strength
         )
-        team_obj.persist()
+        result.append(team_obj)
+    return result
