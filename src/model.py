@@ -1,3 +1,5 @@
+from math import ceil, floor
+
 map_id = {}
 
 
@@ -54,11 +56,38 @@ class League:
         self.fixture = []
         self.report = '\n'.join([t.present() + '\n' for t in map_id.values()])
     
-    # def arrange(self):
-    #     team_number = len(map_id)
-    #     match_number = (team_number * (team_number - 1)) / 2
-    #     week_match_number = team_number / 2
-    #     week_number = match_number / week_match_number
+    def arrange(self):
+        team_number = len(map_id)
+        match_number = (team_number * (team_number - 1)) / 2
+        week_match_number = floor(team_number / 2)
+        week_number = ceil(match_number / week_match_number)
 
-    #     for team in range(map_id.values()):
-    #         for 
+        matches = set()
+        for src in range(team_number):
+            for des in range(src + 1, team_number):
+                matches.add((src, des))
+        
+        added_matches = 0
+        for w in range(week_number):
+            week_matches = []
+            week_teams = set()
+
+            while len(week_matches) < week_match_number and added_matches < match_number:
+                approval_match = []
+                for match in matches:
+                    if (match[0] not in week_teams) and (match[1] not in week_teams):
+                        approval_match = match
+                        break
+                week_matches.append(approval_match)
+                week_teams.add(approval_match[0])
+                week_teams.add(approval_match[1])
+                matches.remove(approval_match)
+                added_matches += 1
+            
+            self.fixture.append(week_matches)
+        
+        self.report += '\n\nFixture plan:\n'
+        for ind, week in enumerate(self.fixture):
+            self.report += f'\n\tWeek {ind + 1}:\n'
+            self.report += '\n'.join(f'\t\t{get_team(t[0]).name} - {get_team(t[1]).name}' for t in week)
+

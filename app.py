@@ -11,5 +11,6 @@ def fixture(team_number):
     generate_fake_teams(int(team_number))
     scoreboard = Scoreboard(int(team_number))
     league = League(scoreboard)
+    league.arrange()
 
     return league.report
